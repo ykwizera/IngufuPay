@@ -235,3 +235,169 @@ https://www.figma.com/make/fDkIW5Hlfm7nvPZ3QjB6Pe/IngufuPay-Web-Application?full
 ### screenshots
 
 Log in ![alt text](image.png)
+SignUP ![alt text](image-1.png)
+Dashboard ![alt text](image-2.png)
+
+### Class Diagram
+
+![alt text](image-3.png)
+
+### System Architecture
+
+![alt text](image-4.png)
+
+### ERD Diagram
+
+![alt text](image-5.png)
+
+## Deployment Plan
+
+### Pre-Deployment Checklist
+
+- [ ] Set `DEBUG = False` in production settings
+- [ ] Generate secure `DJANGO_SECRET_KEY`
+- [ ] Set up PostgreSQL database (migrate from SQLite)
+- [ ] Configure allowed hosts
+- [ ] Set up HTTPS/SSL certificates
+- [ ] Configure email service for notifications
+- [ ] Set up Redis for caching and Celery tasks
+- [ ] Configure payment gateway credentials (MTN, Airtel)
+- [ ] Set up monitoring and logging
+- [ ] Create backup strategy
+- [ ] Load test the application
+
+### Deployment Options
+
+#### Option 1: Heroku Deployment
+
+1. **Create Procfile**
+```
+web: gunicorn ingufupay.wsgi
+worker: celery -A ingufupay worker --loglevel=info
+beat: celery -A ingufupay beat --loglevel=info
+```
+
+2. **Deploy**
+```bash
+heroku login
+heroku create ingufupay
+git push heroku main
+heroku run python manage.py migrate
+heroku run python manage.py createsuperuser
+```
+
+#### Option 2: AWS Deployment (EC2 + RDS)
+
+1. **Setup EC2 Instance**
+   - Launch t2.medium instance (Ubuntu 20.04 LTS)
+   - Configure security groups for ports 80, 443, 8000
+   - Connect via SSH
+
+2. **Install Dependencies**
+```bash
+sudo apt update
+sudo apt install python3-pip python3-dev postgresql postgresql-contrib nginx
+```
+
+3. **Deploy Application**
+```bash
+git clone https://github.com/yourusername/IngufuPay.git
+cd IngufuPay/backend
+pip install -r requirements.txt
+python manage.py migrate
+gunicorn --bind 0.0.0.0:8000 ingufupay.wsgi &
+```
+
+4. **Configure Nginx Reverse Proxy**
+```nginx
+server {
+    listen 80;
+    server_name yourdomain.com;
+
+    location / {
+        proxy_pass http://localhost:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /static/ {
+        alias /path/to/static/;
+    }
+}
+```
+
+#### Option 3: Docker Deployment
+
+1. **Create Dockerfile** (if not exists)
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY backend/requirements.txt .
+RUN pip install -r requirements.txt
+
+COPY backend/ .
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "ingufupay.wsgi"]
+```
+
+2. **Create docker-compose.yml**
+```yaml
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ingufupay
+      POSTGRES_USER: ingufupay_user
+      POSTGRES_PASSWORD: securepassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://ingufupay_user:securepassword@db:5432/ingufupay
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/web:/usr/share/nginx/html
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: ./backend
+    command: celery -A ingufupay worker -l info
+    depends_on:
+      - redis
+      - db
+
+volumes:
+  postgres_data:
+```
+
+3. **Deploy**
+```bash
+docker-compose up -d
+docker-compose exec backend python manage.py migrate
+docker-compose exec backend python manage.py createsuperuser
+```
+## Contributing
+
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit changes: `git commit -m 'Add AmazingFeature'`
+4. Push to branch: `git push origin feature/AmazingFeature`
+5. Open a Pull Request
