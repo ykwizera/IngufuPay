@@ -1,19 +1,5 @@
 # IngufuPay - Smart Prepaid Electricity Payment System
 
-## Table of Contents
-- [Description](#description)
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Environment Setup](#environment-setup)
-- [Installation & Setup](#installation--setup)
-- [Configuration](#configuration)
-- [Running the Application](#running-the-application)
-- [Designs & Documentation](#designs--documentation)
-- [API Documentation](#api-documentation)
-- [Deployment Plan](#deployment-plan)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Description
 
 **IngufuPay** is a comprehensive digital platform for managing prepaid electricity payments and monitoring power consumption. The system enables both household and institutional users to:
