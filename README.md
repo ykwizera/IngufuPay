@@ -216,7 +216,7 @@ python -m http.server 8001
 
 ### Figma Mockups
 
-https://www.figma.com/make/fDkIW5Hlfm7nvPZ3QjB6Pe/IngufuPay-Web-Application?fullscreen=1&t=L53spbRlejvJww5D-1&preview-route=%2Flogin
+https://amend-fetch-86963091.figma.site/login
 
 ### screenshots
 
