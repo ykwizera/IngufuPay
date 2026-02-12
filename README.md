@@ -20,6 +20,10 @@ The platform features a **Django REST Framework backend** providing RESTful APIs
 
 ---
 
+## Demo Video
+
+https://youtu.be/mTv2jrTgJjg
+
 ## Features
 
 ### Core Functionality
